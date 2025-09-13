@@ -1,9 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { doLogin } from "../services/AuthService";
+
 
 function Login() {
 
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  
 
   function onChangeEmail(event){
     setEmail(event.target.value);
@@ -14,7 +21,17 @@ function Login() {
   }
 
   function btnLoginClick(){
-    console.log(email, password);
+    doLogin(email, password)
+        .then(response => {
+            localStorage.setItem("token", response.token);
+            localStorage.setItem("id", response.id);
+            navigate("/dashboard");
+
+        })
+        .catch(err => {
+            console.error(err);
+            setError("Invalid user and/or password");
+        })
   }
 
   return(
@@ -54,6 +71,11 @@ function Login() {
                                 <div className="d-grid">
                                     <button type="button" className="btn btn-gray-800" onClick={btnLoginClick}>Sign in</button>
                                 </div>
+                                {
+                                    error
+                                    ? <div className="alert alert-danger mt-2">{error}</div>
+                                    : <></> //react fragment
+                                }
                             </form>
                         </div>
                     </div>
