@@ -1,3 +1,5 @@
+import axios from "./BaseService";
+
 export async function doLogin(email, password) {
     if(email === "marcio8queiroz@hotmail.com" && password === "123456")
         return {
@@ -7,6 +9,6 @@ export async function doLogin(email, password) {
 throw new Error("401");
 }
 
-export async function doLogout(params) {
-    
+export async function doLogout() {
+    return true;
 }
