@@ -1,14 +1,15 @@
 import axios from "./BaseService";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export async function doLogin(email, password) {
-    if(email === "marcio8queiroz@hotmail.com" && password === "123456")
-        return {
-    id: 1,
-    token: "token"
-}
-throw new Error("401");
+    const logingUrl = API_URL + "/login";
+    const response = axios.post(logingUrl, { email, password});
+    return (await response).data;
 }
 
 export async function doLogout() {
-    return true;
+     const logingUrl = API_URL + "/logout";
+    const response = axios.post(logingUrl, {});
+    return (await response).data;
 }

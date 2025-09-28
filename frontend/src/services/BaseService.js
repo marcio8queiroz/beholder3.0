@@ -14,14 +14,16 @@ axios.interceptors.response.use(
     error => {
         if(error.response && error.response.status == 40){ //nao autorizado
             console.error("Redirected to login by 401 response!");
-            window.location.href = "/";
+
+            if(window.location.pathname !== "/")
+                window.location.href = "/";
+            else
+                return Promise.reject(error.response ? error.response.data : error);
         }
         else
             return Promise.reject(error.response ? error.response.data : error)
     }       
         
 )
-    
-
 
 export default axios;

@@ -19,7 +19,7 @@ app.use(express.json());
 
 app.post("/login", authController.doLogin)
 
-app.use("/logout", authController.doLogout)
+app.post("/logout", authController.doLogout)
 
 app.use("/", (req, res, next) => {
     res.send("Hello World!");
