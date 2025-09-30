@@ -3,6 +3,7 @@ import helmet from "helmet"; //protege de ataques web
 import cors from "cors";
 import morgan from "morgan";
 import errorMiddleware from "./middlewares/errorMidleware.js";
+import authMiddlewares from "./middlewares/authMiddlewares.js";
 import authController from "./controllers/authController.js";
 
 const app = express();
@@ -18,6 +19,8 @@ app.use(cors({
 app.use(express.json());
 
 app.post("/login", authController.doLogin)
+
+app.use("/exchange", authMiddlewares, (req, res, next) => res.send("Funcionou"));
 
 app.post("/logout", authController.doLogout)
 
