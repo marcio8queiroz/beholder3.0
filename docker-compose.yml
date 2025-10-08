@@ -1,0 +1,46 @@
+#version: '3.8'
+
+services:
+  # 1. Serviço do Banco de Dados MySQL
+  mysqldb:
+    image: mysql:8.0 # Versão estável do MySQL
+    container_name: mysql_db_bot
+    restart: always
+    environment:
+      # Variáveis usadas pelo container do MySQL
+      MYSQL_ROOT_PASSWORD: ${DB_PWD}      # Senha do usuário root
+      MYSQL_DATABASE: ${DB_NAME}          # Nome do banco de dados a ser criado
+      MYSQL_USER: ${DB_USER}              # Usuário que sua app usará
+      MYSQL_PASSWORD: ${DB_PWD}           # Senha do usuário da sua app
+    ports:
+      # Mapeia a porta do container (3306) para a sua máquina local (3306)
+      - "3306:3306"
+    volumes:
+      # Isso persiste os dados do banco, para não perdê-los ao parar o container
+      - db_data:/var/lib/mysql
+
+  # 2. Serviço da Aplicação Node.js (seu bot)
+  node_app:
+    build: . # O Dockerfile está neste diretório
+    container_name: binance_bot_app
+    restart: always
+    # Depende do banco de dados estar rodando primeiro
+    depends_on:
+      - mysqldb
+    environment:
+      # Variáveis de ambiente que seu db.js precisa:
+      DB_HOST: mysqldb          # CRÍTICO: O host é o nome do serviço do Docker Compose
+      DB_PORT: 3306             # Porta interna do container do MySQL
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PWD: ${DB_PWD}
+      DB_DIALECT: mysql
+      NODE_ENV: development     # ou production, dependendo do que você configurou
+
+    ports:
+      # Mapeia a porta da sua aplicação para a sua máquina local (se aplicável)
+      - "3000:3000"
+
+# Volumes para persistência de dados
+volumes:
+  db_data:
