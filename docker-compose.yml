@@ -27,6 +27,10 @@ services:
     # Depende do banco de dados estar rodando primeiro
     depends_on:
       - mysqldb
+
+     # 1. NOVO: Define o diretório de trabalho padrão dentro do container
+    working_dir: /usr/src/app 
+
     environment:
       # Variáveis de ambiente que seu db.js precisa:
       DB_HOST: mysqldb          # CRÍTICO: O host é o nome do serviço do Docker Compose
@@ -37,9 +41,13 @@ services:
       DB_DIALECT: mysql
       NODE_ENV: development     # ou production, dependendo do que você configurou
 
-    ports:
-      # Mapeia a porta da sua aplicação para a sua máquina local (se aplicável)
-      - "3000:3000"
+    # ports:
+    #   # Mapeia a porta da sua aplicação para a sua máquina local (se aplicável)
+    #   - "3000:3000"
+
+    volumes:
+      # 2. NOVO: Sincroniza sua pasta local 'backend' com o novo WORKDIR
+      - ./backend:/usr/src/app 
 
 # Volumes para persistência de dados
 volumes:

@@ -1,4 +1,9 @@
 const path = require("path");
+
 module.exports = {
+    // O Sequelize vai procurar a pasta 'migrations' DENTRO do WORKDIR (/usr/src/app).
+    'migrations-path': path.resolve('migrations'),
+    // Ajuste os paths de models e config conforme sua estrutura
+  'models-path': path.resolve('models'),
     "config": path.resolve("config", "config.js")
-}
+};
