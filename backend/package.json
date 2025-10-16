@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node -r dotenv/config ./src/server.js",
     "dev": "npx nodemon -r dotenv/config ./src/server.js",
-    "createdb": "npx sequelize-cli db:create"
+    "createdb": "npx sequelize-cli db:create",
+    "migratedb": "npx sequelize-cli db:migrate",
+    "seeddb": "npx sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "",
