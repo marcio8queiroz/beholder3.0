@@ -1,0 +1,22 @@
+# Usa uma imagem base leve do Node.js (versão LTS)
+FROM node:20-alpine
+
+# Define o diretório de trabalho dentro do container
+WORKDIR /usr/src/app
+
+# Copia os arquivos de definição de dependência
+COPY frontend/package*.json ./
+
+# Instala as dependências do frontend (incluindo o Vite)
+RUN npm install
+
+# Copia o restante do código fonte do frontend
+COPY frontend/ .
+
+# Expõe a porta que o Vite usará
+EXPOSE 3000
+
+# Comando para iniciar o servidor de desenvolvimento do Vite
+# O comando "npm run dev" já deve incluir o "--host 0.0.0.0" no package.json, 
+# garantindo que o servidor seja acessível externamente.
+CMD ["npm", "run", "dev"]

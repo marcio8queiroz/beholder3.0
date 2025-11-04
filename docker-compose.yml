@@ -1,4 +1,5 @@
-#version: '3.8'
+# Corrigindo o erro de sintaxe 'bash: erro de sintaxe próximo ao token inesperado ('
+# Removendo a linha '#version: '3.8'' pois o compose não precisa dela.
 
 services:
   # 1. Serviço do Banco de Dados MySQL
@@ -19,16 +20,16 @@ services:
       # Isso persiste os dados do banco, para não perdê-los ao parar o container
       - db_data:/var/lib/mysql
 
-  # 2. Serviço da Aplicação Node.js (seu bot)
+  # 2. Serviço da Aplicação Node.js (seu backend)
   node_app:
-    build: . # O Dockerfile está neste diretório
+    build: 
+      context: .
+      dockerfile: Dockerfile # Assume que o Dockerfile do backend ainda se chama 'Dockerfile' na raiz
     container_name: binance_bot_app
     restart: always
-    # Depende do banco de dados estar rodando primeiro
     depends_on:
       - mysqldb
 
-     # 1. NOVO: Define o diretório de trabalho padrão dentro do container
     working_dir: /usr/src/app 
 
     environment:
@@ -39,15 +40,39 @@ services:
       DB_USER: ${DB_USER}
       DB_PWD: ${DB_PWD}
       DB_DIALECT: mysql
-      NODE_ENV: development     # ou production, dependendo do que você configurou
+      NODE_ENV: development     
 
-    # ports:
-    #   # Mapeia a porta da sua aplicação para a sua máquina local (se aplicável)
-    #   - "3000:3000"
+    ports:
+      # Mapeia a porta da sua aplicação (3001) para a sua máquina local (3001)
+      - "3001:3001"
 
     volumes:
-      # 2. NOVO: Sincroniza sua pasta local 'backend' com o novo WORKDIR
       - ./backend:/usr/src/app 
+
+  # 3. Serviço da Aplicação Frontend (Vite/React)
+  frontend_app:
+    build: 
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: beholder30-frontend_app
+    restart: always
+    depends_on:
+      - node_app # Depende do backend para se conectar à API
+    
+    working_dir: /usr/src/app
+    
+    # IMPORTANTE: Garante que o frontend se conecte ao backend via o host, 
+    # e que o Vite inicie corretamente.
+    environment:
+      # VITE_API_URL: http://localhost:3001 (Esta variável é injetada via frontend/.env)
+      NODE_ENV: development
+
+    ports:
+      # Mapeia a porta do Vite (3000) para a sua máquina local (3000)
+      - "3000:3000"
+
+    volumes:
+      - ./frontend:/usr/src/app # Sincroniza a pasta local 'frontend'
 
 # Volumes para persistência de dados
 volumes:
