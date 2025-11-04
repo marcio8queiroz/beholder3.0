@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
     "mysql2": "^3.15.1",
+    "node-binance-api": "^1.0.17",
     "sequelize": "^6.37.7"
   }
 }
