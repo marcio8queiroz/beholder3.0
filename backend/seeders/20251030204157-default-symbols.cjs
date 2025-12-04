@@ -18,4 +18,4 @@ await symbolsController.syncSymbols();
 async down (queryInterface, Sequelize) {
 return queryInterface.bulkDelete("symbols");
 }
-};
+}; 
