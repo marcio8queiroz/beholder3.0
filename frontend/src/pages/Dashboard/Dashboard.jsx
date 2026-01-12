@@ -1,9 +1,12 @@
+import TemplatePage from "../TemplatePage"
 
 function Dashboard() {
-  return(
-    <div>
-      Dashboard
-    </div>
+  return (
+    <TemplatePage>
+      <div>
+        Dashboard
+      </div>
+    </TemplatePage>
   )
 }
 
