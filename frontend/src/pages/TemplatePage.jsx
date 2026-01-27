@@ -1,4 +1,5 @@
-import SideBar from "../components/SideBar"
+import Footer from "../components/Footer"
+import SideBar from "../components/Menu/SideBar"
 
 export default function TemplatePage({ children }) {
     return (
@@ -6,6 +7,7 @@ export default function TemplatePage({ children }) {
             <SideBar />
             <main className="content">
                 {children}
+                <Footer></Footer>
             </main>
         </>
     )
