@@ -3,7 +3,7 @@ export default function Footer(){
         <footer class="bg-white rounded shadow p-5 mb-4 mt-4">
       <div class="row">
         <div class="col-12 col-md-4 col-xl-6 mb-4 mb-md-0">
-          <p class="mb-0 text-center text-lg-start">© 2026-<span class="current-year"></span> <a
+          <p class="mb-0 text-center text-lg-start">© 2025-2026 -<span class="current-year"></span> <a
               class="text-primary fw-normal" href="https://themesberg.com" target="_blank">Márcio Queiroz. BotCrypto</a></p>
         </div>
         <div class="col-12 col-md-8 col-xl-6 text-center text-lg-start">
@@ -12,10 +12,10 @@ export default function Footer(){
               <a href="https://themesberg.com/about">About</a>
             </li>
             <li class="list-inline-item px-0 px-sm-2">
-              <a href="https://themesberg.com/themes">Themes</a>
+              <a href="https://themesberg.com/themes">Courses</a>
             </li>
             <li class="list-inline-item px-0 px-sm-2">
-              <a href="https://themesberg.com/blog">Blog</a>
+              <a href="https://themesberg.com/blog">Books</a>
             </li>
             <li class="list-inline-item px-0 px-sm-2">
               <a href="https://themesberg.com/contact">Contact</a>
