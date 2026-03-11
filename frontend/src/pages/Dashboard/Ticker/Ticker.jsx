@@ -1,6 +1,21 @@
+import useWebSocket from "react-use-websocket";
+
 function Ticker() {
 
     const TOP_COINS = ["BTCUSDT", "ETHUSDT", "SOLUSDT","XRPUSDT","ENAUSDT","AVAXUSDT", "WIFUSDT", "SUIUSDT", "PAXGUSDT", "ADAUSDT"];
+    const streams = TOP_COINS.map(coin => coin.toLowerCase() + "@ticker").join("/");
+
+    const { lastJsonMessage } = useWebSocket(import.meta.env.VITE_BWS_URL + "/stream", {
+        onOpen: () => console.log("connected to Binance WS"),
+        onMessage: () => {
+            console.log(lastJsonMessage);
+        },
+        queryParams: {streams},
+        onError: (error) => console.error(error),
+        shouldReconnect: (error) => true,
+        reconnectInterval: 60000
+      
+    });
  
     return (
         <div className="col-12">
