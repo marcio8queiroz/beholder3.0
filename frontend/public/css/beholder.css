@@ -5,3 +5,18 @@
 .divTradingView {
     height: 500px
 }
+
+.divScroll {
+    overflow: auto;
+    max-height: 345px;
+}
+
+.tableFixHead {
+    overflow: auto;
+    height: 100px;
+}
+.tableFixHead thead {
+    position: sticky; /*cabeçalho fixo*/
+    top: 0;
+    z-index: 1;
+}

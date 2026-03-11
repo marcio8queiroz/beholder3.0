@@ -1,6 +1,7 @@
 import NewOrderButton from "../Orders/NewOrderButton"
 import TemplatePage from "../TemplatePage"
 import CandleChart from "./CandleChart"
+import Ticker from "./Ticker/Ticker"
 
 function Dashboard() {
   return (
@@ -16,7 +17,7 @@ function Dashboard() {
     <CandleChart />
       <div className="row">
         <div className="col-6">
-          {/* market 24h */}
+          <Ticker />
         </div>
         <div className="col-6">
           {/* carteira */}
