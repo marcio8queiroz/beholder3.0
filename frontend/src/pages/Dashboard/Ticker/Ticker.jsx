@@ -1,14 +1,22 @@
+import { useState } from "react";
 import useWebSocket from "react-use-websocket";
+import TickerRow from "./TickerRow";
 
 function Ticker() {
 
     const TOP_COINS = ["BTCUSDT", "ETHUSDT", "SOLUSDT","XRPUSDT","ENAUSDT","AVAXUSDT", "WIFUSDT", "SUIUSDT", "PAXGUSDT", "ADAUSDT"];
     const streams = TOP_COINS.map(coin => coin.toLowerCase() + "@ticker").join("/");
 
+    const [ticker, setTicker] = useState({});
+
     const { lastJsonMessage } = useWebSocket(import.meta.env.VITE_BWS_URL + "/stream", {
         onOpen: () => console.log("connected to Binance WS"),
         onMessage: () => {
-            console.log(lastJsonMessage);
+            if(!lastJsonMessage) return;
+            setTicker(prevState => ({
+                ...prevState,
+                [lastJsonMessage.data.s]: lastJsonMessage.data
+            }))
         },
         queryParams: {streams},
         onError: (error) => console.error(error),
@@ -40,7 +48,9 @@ function Ticker() {
                         </thead>
                         <tbody> 
                             {
-                                    TOP_COINS.map(coin => <tr>{coin}</tr>)
+                               TOP_COINS.map(item => (
+                                <TickerRow key={item} symbol={item} data={ticker[item]} />
+                               ))
                             }
                         </tbody>
                     </table>
