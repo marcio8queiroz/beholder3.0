@@ -2,9 +2,12 @@ import express from "express";
 import helmet from "helmet"; //protege de ataques web
 import cors from "cors";
 import morgan from "morgan";
+
 import errorMiddleware from "./middlewares/errorMidleware.js";
 import authMiddlewares from "./middlewares/authMiddlewares.js";
+
 import authController from "./controllers/authController.js";
+import exchangeController from "./controllers/exchangeController.js";
 
 const app = express();
 
@@ -20,7 +23,7 @@ app.use(express.json());
 
 app.post("/login", authController.doLogin)
 
-app.use("/exchange", authMiddlewares, (req, res, next) => res.send("Funcionou"));
+app.use("/exchange/balance", authMiddlewares, exchangeController.getBalance);
 
 app.post("/logout", authController.doLogout)
 
