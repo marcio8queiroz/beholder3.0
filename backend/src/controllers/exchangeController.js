@@ -1,7 +1,7 @@
 import Exchange from "../utils/exchange.js";
 import logger from "../utils/logger.js";
 
-const FIAT = process.env.DEFAULT_FIAT;
+const FIAT = process.env.DEFAULT_FIAT || "USD";
 
 async function getBalance(req, res, next) {
 
