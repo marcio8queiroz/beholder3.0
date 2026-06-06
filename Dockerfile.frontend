@@ -19,4 +19,4 @@ EXPOSE 3000
 # Comando para iniciar o servidor de desenvolvimento do Vite
 # O comando "npm run dev" já deve incluir o "--host 0.0.0.0" no package.json, 
 # garantindo que o servidor seja acessível externamente.
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev", "--", "--host"]

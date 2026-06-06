@@ -23,4 +23,16 @@ export default class Exchange {
         await this.binance.useServerTime(); //reduzir erros de timestamp - relogio do servidor
         return this.binance.balance();
     }
+
+    tickerStream(callback){
+        this.binance.websockets.miniTicker((data) => {
+           const converted = Object.keys(data).map(key => {
+                return {
+                    symbol: key,
+                    ...data[key]
+                }
+           });
+            callback(converted);
+        }, true);
+    }
 }
