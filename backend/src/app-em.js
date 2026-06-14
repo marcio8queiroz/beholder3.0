@@ -4,7 +4,7 @@ import Exchange from "./utils/exchange.js";
 function startTickerMonitor(){
     new Exchange().tickerStream(async (markets) => {
         console.log(markets);
-    })
+    }) 
     logger("M-TICKER", "Ticker monitor has started!");
 }
 
