@@ -13,4 +13,11 @@ export default class Cache {
     async set(key, value) {
         this.MEMORY[key] = value;
     }
+
+    async search(pattern) {
+        if (!pattern) 
+            return { ...this.MEMORY };
+
+        //faz a busca com o padrao
+    }
 }
