@@ -53,7 +53,7 @@ export default class Beholder {
         if(fiat) fiat = fiat.toUpperCase();
         if(Beholder.FIAT_COINS.includes(baseAsset) && baseAsset === fiat) return baseQty;
 
-        const usd = this.tryFiatConversion(baseAsset, baseQty);
+        const usd = await this.tryUsdConversion(baseAsset, baseQty);
         if(fiat === "USD" || !fiat) return usd;
 
         let ticker = await this.getMemory("USDT" + fiat, "TICKER");

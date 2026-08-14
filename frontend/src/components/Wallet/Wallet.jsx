@@ -5,22 +5,12 @@ import { getBalance } from "../../services/ExchangeService.js";
 
 function Wallet() {
 
-    const [fiat, setFiat] = useState("~USD 100");
-    const [balances, setBalances] = useState([{
-        symbol: "BTC",
-        available: "0.001",
-        onOrder: "0.000"
-    }, {
-        symbol: "ETH",
-        available: "1.001",
-        onOrder: "0.000"
-    }, {
-        symbol: "SOL",
-        available: "17.0017",
-        onOrder: "0.100"
-    }])
+    const [fiat, setFiat] = useState("");
+    const [balances, setBalances] = useState([ ])
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        setIsLoading(true);
         getBalance()
             .then(info => {
                 const balances = Object.entries(info)
@@ -38,11 +28,13 @@ function Wallet() {
                     })
                 setBalances(balances);
                 setFiat(info.fiatEstimate);
+                setIsLoading(false);
 
             })
             .catch(err => {
                 console.error(err.response ? err.response.data : err);
                 setFiat(err.response ? err.response.data : "err.message");
+                setIsLoading(false);
             })
     }, [])
 
@@ -67,9 +59,10 @@ function Wallet() {
                         </thead>
                         <tbody>
                             {
-                                balances && balances.length
-                                    ? balances.map(item => (<WalletRow key={item.symbol} symbol={item.symbol} available={item.available} onOrder={item.onOrder} />))
-                                    : <></>
+                               !isLoading && balances && balances.length
+                                    ? balances.map(item => (
+                                        <WalletRow key={item.symbol} symbol={item.symbol} available={item.available} onOrder={item.onOrder} />))
+                                    : <tr className="mb-3"><td colSpan={3}>Loading...</td></tr>
                             }
                         </tbody>
                     </table>
