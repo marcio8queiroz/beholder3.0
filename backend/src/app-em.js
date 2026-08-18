@@ -13,11 +13,13 @@ function startTickerMonitor(){
     logger("M-TICKER", "Ticker monitor has started!");
 }
 
-async function init(userId) {
+let WSS;
+
+async function init(userId, wssInstance) {
+    WSS = wssInstance;
+   setInterval(() => WSS.broadcast({ message: new Date()}), 3000);
 
     startTickerMonitor();
-
-    //monitoramento do mercado (geral)
 
     //monitoramento da conta do usuário
 
@@ -25,6 +27,8 @@ async function init(userId) {
 
     logger("system", "App Exchange Monitor has started!");
 }
+
+
 
 export default {
     init
