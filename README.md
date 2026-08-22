@@ -17,3 +17,7 @@ docker logs -f binance_bot_app
 
 # reiniciar o backend
 docker compose restart node_app
+
+
+# validar o docker-compose.yml #se nao apareccer nada o yaml está válido
+docker compose config --quiet
