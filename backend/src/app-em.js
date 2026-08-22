@@ -5,9 +5,12 @@ import Beholder from "./beholder.js";
 function startTickerMonitor(){
     new Exchange().tickerStream(async (markets) => {
        const beholder = Beholder.getInstance();
-       markets.forEach(mkt => beholder.updateMemory(mkt.symbol, "TICKER", null, mkt));
+       let results = await Promise.all(markets.map(mkt => beholder.updateMemory(mkt.symbol, "TICKER", null, mkt)));
+       if(!results) return;
 
-       //notificar o usuário se disparou alguma automação
+       results = results.filter(r => r);
+       if(results && results.length)
+       results.map(r => WSS.broadcast({ notification: r }));//{ text, type: success|error }
     })
 
     logger("M-TICKER", "Ticker monitor has started!");
@@ -15,9 +18,9 @@ function startTickerMonitor(){
 
 let WSS;
 
-async function init(userId, wssInstance) {
+function init(userId, wssInstance) {
     WSS = wssInstance;
-   setInterval(() => WSS.broadcast({ message: new Date()}), 3000);
+   
 
     startTickerMonitor();
 
