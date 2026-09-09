@@ -12,25 +12,50 @@ function startTickerMonitor() {
         if (!results) return;
 
         results = results.filter((result) => result);
-        if (results.length) {
+        if (results.length) 
             results.forEach((result) => WSS.broadcast({ notification: result }));
-        }
-    });
+        
+    })
 
     logger("M-TICKER", "Ticker monitor has started!");
 }
 
+async function loadWallet(userId, executeAutomations = true) {
+    const exchange = new Exchange();
+  
+    const info = await exchange.balance();
+    const beholder = Beholder.getInstance();
+    let results = await Promise.all(
+        Object.keys(info).map(item => beholder.updateMemory(item, `WALLET_${userId}`, null, info[item].available, executeAutomations))
+    );
+
+    
+     
+    const wallet = Object.keys(info).map(item => {
+        return { symbol: item, available: info[item].available, onOrder: info[item].onOrder };
+    });
+
+    if (results) {
+       results = results.filter((result) => result);
+        if (results.length) 
+            results.forEach((result) => WSS.broadcast({ notification: result }));
+    }
+    return wallet;
+
+}
+''
 function startUserDataMonitor(userId) {
     try {
-        //carregar saldos da carteira 
+        loadWallet(userId, false)
+            .catch(err => logger("U-" + userId, "Wallet has NOT loaded!\n" + (err.body ? JSON.stringify
+                (err.body) : err.message)));
 
         //configurar streaming de user data
 
         logger("U-" + userId, "User Data monitor has started!");
     }
     catch (err) {
-        logger("U-" + userId, "User Data monitor has not started!\n" + (err.response ? JSON.stringify(err.response.data)
-            : err.message));
+        logger("U-" + userId, "User Data monitor has not started!\n" + (err.body ? JSON.stringify(err.body) : err.message));
     }
 }
 

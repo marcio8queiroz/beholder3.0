@@ -1,6 +1,6 @@
 import Binance from "node-binance-api";
 
-const LOGS = process.env.BINANCE_LOGS === "true"
+const LOGS = process.env.BINANCE_LOGS === "false"
 const APIKEY = process.env.ACCES_KEY;
 const APISECRET = process.env.SECRET_KEY;
 

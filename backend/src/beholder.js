@@ -1,4 +1,5 @@
 import Cache from "./utils/cache.js";
+import logger from "./utils/logger.js";
 
 
 const LOGS = process.env.BEHOLDER_LOGS === "true";
@@ -75,7 +76,7 @@ export default class Beholder {
 
         if (LOGS) logger("beholder", `Beholder memory update: ${memoryKey} => ${JSON.stringify(value)}`);
 
-        this.cache.set(memoryKey, value);
+        await this.cache.set(memoryKey, value);
 
         //testa as automações
     }
@@ -111,7 +112,7 @@ export default class Beholder {
         newMemory.previous = currentMemory ? currentMemory.current : ticker;
         newMemory.current = ticker;
 
-        this.setCache(symbol, index, null, newMemory, executeAutomations);
+        return this.setCache(symbol, index, null, newMemory, executeAutomations);
     }
 
     async updateMemory(symbol, index, interval, value, executeAutomations = true) {

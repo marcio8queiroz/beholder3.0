@@ -12,16 +12,16 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
     response => response,
     error => {
-        if(error.response && error.response.status == 40){ //nao autorizado
-            console.error("Redirected to login by 401 response!");
+        if (error.response?.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("id");
 
-            if(window.location.pathname !== "/")
-                window.location.href = "/";
-            else
-                return Promise.reject(error.response ? error.response.data : error);
+            if (window.location.pathname !== "/") {
+                window.location.replace("/");
+            }
         }
-        else
-            return Promise.reject(error.response ? error.response.data : error)
+
+        return Promise.reject(error.response ? error.response.data : error);
     }       
         
 )
