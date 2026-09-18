@@ -60,8 +60,33 @@ async function processBalanceData(userId, data) {
 }
 
 async function processExecutionData(userId, data) {
-   
+    if(data.x === "NEW") return; //ignorar ordens novas, apenas monitorar ordens executadas 
+
+    if(LOGS) logger("U-" + userId, JSON.stringify(data));
+
+    const order = {
+        symbol: data.s,
+        orderId: data.i, 
+        side: data.S,
+        type: data.o,
+        status: data.X,
+        transactTime: data.T
+    }
+
+    if(order.status === "FILLED") {
+        const quoteAmount = parseFloat(data.Z);
+        order.avgPrice = quoteAmount / parseFloat(data.z);
+        order.commission = data.n;  
+        order.quantity = data.q;
+        const isQuotCommission = data.N && order.symbol.endWith(data.N); //verificar se a comissão é em moeda de cotação ou moeda base
+        order.net = isQuotCommission ? quoteAmount - parseFloat(order.commission) : quoteAmount;
+    }
+    else if(order.status === "REJECTED") 
+        order.obs = data.r;
+
+    //order update
 }
+
 
 function startUserDataMonitor(userId) {
     try {
