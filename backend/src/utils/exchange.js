@@ -5,7 +5,9 @@ const APIKEY = process.env.ACCES_KEY;
 const APISECRET = process.env.SECRET_KEY;
 
 export default class Exchange {
-    constructor(){
+    constructor(userId) {
+        if(!APIKEY || !APISECRET) throw new Error("Binance keys not found!");
+        this.userId = userId;
         this.binance = new Binance().options({
             APIKEY,
             APISECRET,
@@ -34,5 +36,19 @@ export default class Exchange {
            });
             callback(converted);
         }, true);
+    }
+
+    userDataStream(balanceCallback, executionCallback){
+        this.binance.websockets.userData(
+            () => {},
+            balanceCallback,
+            executionCallback,
+            data => {
+                logger("U-" + this.userId, "userDataStream:subscribed:" + JSON.stringify(data));
+                this.binance.options.listenKey = data;
+
+            },
+            () => { }
+        );       
     }
 }

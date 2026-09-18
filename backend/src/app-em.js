@@ -2,6 +2,9 @@ import logger from "./utils/logger.js";
 import Exchange from "./utils/exchange.js";
 import Beholder from "./beholder.js";
 
+
+const LOGS = process.env.APP_EM_LOGS === "true";
+
 function startTickerMonitor() {
     new Exchange().tickerStream(async (markets) => {
         const beholder = Beholder.getInstance();
@@ -25,9 +28,15 @@ async function loadWallet(userId, executeAutomations = true) {
   
     const info = await exchange.balance();
     const beholder = Beholder.getInstance();
-    let results = await Promise.all(
-        Object.keys(info).map(item => beholder.updateMemory(item, `WALLET_${userId}`, null, info[item].available, executeAutomations))
-    );
+    let results = await Promise.all(Object.keys(info).map(async item => {
+        if(executeAutomations) {
+        const memory = await beholder.getMemory(`WALLET_${userId}`);
+        if (memory === info[item].available) return;
+        }
+
+        beholder.updateMemory(item, `WALLET_${userId}`, null, info[item].available, executeAutomations)
+
+    }));
 
     
      
@@ -41,16 +50,30 @@ async function loadWallet(userId, executeAutomations = true) {
             results.forEach((result) => WSS.broadcast({ notification: result }));
     }
     return wallet;
-
 }
-''
+
+async function processBalanceData(userId, data) {
+    if(LOGS) logger("U-" + userId, JSON.stringify(data));
+
+    loadWallet(userId, true)
+        .catch(err => logger("U-" + userId, err.body ? JSON.stringify(err.body) : err.message));
+}
+
+async function processExecutionData(userId, data) {
+   
+}
+
 function startUserDataMonitor(userId) {
     try {
         loadWallet(userId, false)
             .catch(err => logger("U-" + userId, "Wallet has NOT loaded!\n" + (err.body ? JSON.stringify
                 (err.body) : err.message)));
-
-        //configurar streaming de user data
+ 
+        const exchange = new Exchange(userId);
+        exchange.userDataStream(
+            data => processBalanceData(userId, data),
+            data => processExecutionData(userId, data)
+        )
 
         logger("U-" + userId, "User Data monitor has started!");
     }
