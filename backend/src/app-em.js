@@ -1,17 +1,27 @@
 import logger from "./utils/logger.js";
 import Exchange from "./utils/exchange.js";
 import Beholder from "./beholder.js";
+import symbolsRepository from "./repositories/symbolsRepository.js";
 
 
 const LOGS = process.env.APP_EM_LOGS === "true";
 
-function startTickerMonitor() {
+async function startTickerMonitor() {
+    const symbolsMap = {};
+    const symbolsArray = await symbolsRepository.getSymbols();
+
+    symbolsArray.forEach(symbol => {
+        symbolsMap[symbol.symbol] = true;
+    });
+
     new Exchange().tickerStream(async (markets) => {
         const beholder = Beholder.getInstance();
-        let results = await Promise.all(
-            markets.map((mkt) => beholder.updateMemory(mkt.symbol, "TICKER", null, mkt))
-        );
-
+        let results = await Promise.all(markets.map((mkt => {
+             if (!symbolsMap[mkt.symbol]) return false;
+             return beholder.updateMemory(mkt.symbol, "TICKER", null, mkt)
+                      
+            }))
+        )
         if (!results) return;
 
         results = results.filter((result) => result);
@@ -100,7 +110,6 @@ function startUserDataMonitor(userId) {
             data => processExecutionData(userId, data)
         )
 
-        logger("U-" + userId, "User Data monitor has started!");
     }
     catch (err) {
         logger("U-" + userId, "User Data monitor has not started!\n" + (err.body ? JSON.stringify(err.body) : err.message));
@@ -112,7 +121,7 @@ let WSS;
 function init(userId, wssInstance) {
     WSS = wssInstance;
 
-    startTickerMonitor();
+    startTickerMonitor().catch(err => logger("M-TICKER", "Ticker monitor has not started: " + err.message));
 
     startUserDataMonitor(userId);
 

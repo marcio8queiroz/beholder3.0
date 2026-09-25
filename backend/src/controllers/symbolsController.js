@@ -22,7 +22,7 @@ async function syncSymbols(params) {
             base: item.baseAsset,
             quote: item.quoteAsset,
             minNotional: notionalFilter ? notionalFilter.minNotional: "1",
-            minLotSize: lotSizeFilter ? lotSizeFilter.minQty : "1",
+            minLoteSize: lotSizeFilter ? lotSizeFilter.minQty : "1",
             stepSize: lotSizeFilter ? lotSizeFilter.stepSize : "1",
             tickSize: priceFilter ? priceFilter.tickSize: "1"
         }

@@ -96,7 +96,16 @@ export default class Beholder {
 
         const ticker = originalTicker;
         
+        ticker.priceChange = parseFloat(ticker.priceChange);
+        ticker.percentChange = parseFloat(ticker.percentChange);
+        ticker.averagePrice = parseFloat(ticker.averagePrice);
+        ticker.prevClose = parseFloat(ticker.prevClose);
         ticker.close = parseFloat(ticker.close);
+        ticker.closeQty = parseFloat(ticker.closeQty);
+        ticker.bestBid = parseFloat(ticker.bestBid);
+        ticker.bestBidQty = parseFloat(ticker.bestBidQty);
+        ticker.bestAsk = parseFloat(ticker.bestAsk);
+        ticker.bestAskQty = parseFloat(ticker.bestAskQty);
         ticker.open = parseFloat(ticker.open);
         ticker.high = parseFloat(ticker.high);
         ticker.low = parseFloat(ticker.low);
@@ -104,6 +113,12 @@ export default class Beholder {
         ticker.quoteVolume = parseFloat(ticker.quoteVolume);
 
         delete ticker.eventTime;
+        delete ticker.eventType;
+        delete ticker.lastTradeId;
+        delete ticker.firstTradeId;
+        delete ticker.numTrades;
+        delete ticker.openTime;
+        delete ticker.closeTime;
         delete ticker.symbol;
 
         const currentMemory = await this.getMemory(symbol, index);

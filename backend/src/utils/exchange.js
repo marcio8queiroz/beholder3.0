@@ -1,5 +1,6 @@
 import Binance from "node-binance-api";
 import logger from "./logger.js";
+import createUserDataStream from "./userDataStream.js";
 
 const LOGS = process.env.BINANCE_LOGS === "false"
 const APIKEY = process.env.ACCES_KEY;
@@ -40,16 +41,18 @@ export default class Exchange {
     }
 
     userDataStream(balanceCallback, executionCallback){
-        this.binance.websockets.userData(
-            () => {},
-            balanceCallback,
-            executionCallback,
-            data => {
-                logger("U-" + this.userId, "userDataStream:subscribed:" + JSON.stringify(data));
-                this.binance.options.listenKey = data;
-
+        this.userStream?.close();
+        this.userStream = createUserDataStream({
+            apiKey: APIKEY,
+            apiSecret: APISECRET,
+            testnet: process.env.NODE_ENV !== "production",
+            onBalance: balanceCallback,
+            onExecution: executionCallback,
+            onSubscribed: subscriptionId => {
+                logger("U-" + this.userId, "User Data monitor has started! Subscription: " + subscriptionId);
             },
-            () => { }
-        );       
+            onError: error => logger("U-" + this.userId, "User Data monitor: " + error.message)
+        });
+        return this.userStream;
     }
 }
