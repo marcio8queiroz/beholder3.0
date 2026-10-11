@@ -2,6 +2,7 @@ import {Route, Routes, BrowserRouter, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Orders from "./pages/Orders/Orders";
+import Beholder from "./pages/beholder/beholder";
 
 function Router() {
 
@@ -23,6 +24,12 @@ function Router() {
                 <Route path="/orders" element={
                  <PrivateRoute>
                     <Orders />
+                 </PrivateRoute>
+                } />
+
+                 <Route path="/beholder" element={
+                 <PrivateRoute>
+                    <Beholder />
                  </PrivateRoute>
                 } />
             </Routes>
