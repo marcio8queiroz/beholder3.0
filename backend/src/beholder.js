@@ -17,8 +17,15 @@ export default class Beholder {
     constructor(automations) {
         //inicializar a memória
         this.cache = new Cache();
-        //inicializar o cérebro
+
+        this.BRAIN = {};
+        //inicializar o brain com as automações
     }
+
+    getBrain() {
+        return {...this.BRAIN};
+    }
+
 
     static FIAT_COINS = ["BRL", "EUR", "GBP"];
 

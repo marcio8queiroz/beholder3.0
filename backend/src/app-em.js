@@ -44,7 +44,7 @@ async function loadWallet(userId, executeAutomations = true) {
         if (memory === info[item].available) return;
         }
 
-        beholder.updateMemory(item, `WALLET_${userId}`, null, info[item].available, executeAutomations)
+       return beholder.updateMemory(item, `WALLET_${userId}`, null, parseFloat(info[item].available), executeAutomations)
 
     }));
 

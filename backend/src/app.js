@@ -4,10 +4,12 @@ import cors from "cors";
 import morgan from "morgan";
 
 import errorMiddleware from "./middlewares/errorMidleware.js";
-import authMiddlewares from "./middlewares/authMiddlewares.js";
+import authMiddleware from "./middlewares/authMiddleware.js";
 
 import authController from "./controllers/authController.js";
 import exchangeController from "./controllers/exchangeController.js";
+
+import beholderRouter from "./routers/beholderRouter.js";
 
 const app = express();
 
@@ -23,9 +25,11 @@ app.use(express.json());
 
 app.post("/login", authController.doLogin)
 
-app.use("/exchange/balance", authMiddlewares, exchangeController.getBalance);
+app.use("/exchange/balance", authMiddleware, exchangeController.getBalance);
 
 app.post("/logout", authController.doLogout)
+
+app.use("/beholder", authMiddleware, beholderRouter);
 
 app.use("/", (req, res, next) => {
     res.send("Hello World!");

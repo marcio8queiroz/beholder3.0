@@ -1,6 +1,19 @@
+import { useEffect } from "react";
 import FormPage from "../FormPage";
+import { getMemory, getBrain } from "../../services/BeholderService";
 
 function beholder() {
+
+    useEffect(() => {
+        getMemory()
+            .then(memory => console.log(memory))
+            .catch(err => console.error(err))
+
+        getBrain()
+            .then(brain => console.log(brain))
+            .catch(err => console.error(err))
+    }, [])
+
     return (
         <FormPage title="Beholder">
             <ul className="nav nav-tabs" id="tabs" role="tablist">
