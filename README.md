@@ -12,6 +12,11 @@ docker logs -f binance_bot_app
  # confirmar que o servidor continua estavel
  docker ps --filter name=binance_bot_app
 
+ # Para acompanhar apenas os logs recentes:
+ docker compose logs --since=5m -f node_app 
+ # para acompanhar somente novas mensagens:
+ docker compose logs --tail=0 -f node_app 
+
  # Acompanhe em tempo real com:
  docker logs -f binance_bot_app 2>&1 | grep --line-buffered "app-ws"
 
@@ -21,3 +26,10 @@ docker compose restart node_app
 
 # validar o docker-compose.yml #se nao apareccer nada o yaml está válido
 docker compose config --quiet
+
+# recriar os containers afetados e restaurar a rede, preservando o volume do banco
+docker compose up -d --force-recreate mysqldb node_app
+docker compose logs --tail=50 node_app
+
+# na pasta frontend
+docker compose exec frontend_app npm install react-select

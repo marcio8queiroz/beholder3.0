@@ -2,7 +2,7 @@ import {Route, Routes, BrowserRouter, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Orders from "./pages/Orders/Orders";
-import Beholder from "./pages/beholder/beholder";
+import Beholder from "./pages/beholder/Beholder";
 
 function Router() {
 
