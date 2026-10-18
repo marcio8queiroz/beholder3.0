@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Orders from "./pages/Orders/Orders";
 import Beholder from "./pages/beholder/Beholder";
+import NewOrder from "./pages/Orders/NewOrder";
 
 function Router() {
 
@@ -21,6 +22,12 @@ function Router() {
                  </PrivateRoute>
                 } />
             
+                 <Route path="/orders/new" element={
+                 <PrivateRoute>
+                    <NewOrder />
+                 </PrivateRoute>
+                } />
+
                 <Route path="/orders" element={
                  <PrivateRoute>
                     <Orders />
