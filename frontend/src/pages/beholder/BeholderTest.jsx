@@ -1,6 +1,7 @@
 import Select from "react-select";
 import MemoryForm from "./MemoryForm";
 import { useState } from "react";
+import { updateMemory } from "../../services/BeholderService";
 
 /**
  * props:
@@ -19,7 +20,9 @@ function BeholderTest(props) {
     }
 
     function btnUpdateClick() {
-        console.log(indexValue);
+        updateMemory(index, indexValue.current ? indexValue.current : indexValue)
+            .then(results => alert("Memory update:\n" + JSON.stringify(results)))
+            .catch(err => alert(err.response ? JSON.stringify(err.response.data) : err.message));
     }
 
     function onIndexValueChange(hasCurrent, evt){
