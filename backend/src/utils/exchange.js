@@ -28,16 +28,22 @@ export default class Exchange {
         return this.binance.balance();
     }
 
-    tickerStream(callback){
-        this.binance.websockets.miniTicker((data) => {
-           const converted = Object.keys(data).map(key => {
-                return {
-                    symbol: key,
-                    ...data[key]
+    tickerStream(callback, symbols){
+        const uniqueSymbols = [...new Set(symbols)];
+        const subscriptions = [];
+        // !ticker@arr was retired; subscribe to full tickers by symbol.
+        // Keep combined-stream URLs and subscription counts bounded.
+        for (let offset = 0; offset < uniqueSymbols.length; offset += 200) {
+            const batch = uniqueSymbols.slice(offset, offset + 200);
+            subscriptions.push(this.binance.websockets.prevDay(batch, (error, market) => {
+                if (error) {
+                    logger("M-TICKER", "Ticker stream error: " + error.message);
+                    return;
                 }
-           });
-            callback(converted);
-        }, true);
+                return callback([market]);
+            }));
+        }
+        return subscriptions;
     }
 
     userDataStream(balanceCallback, executionCallback){

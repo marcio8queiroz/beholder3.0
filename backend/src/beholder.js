@@ -101,23 +101,19 @@ export default class Beholder {
 
     async updateTickerMemory(symbol, index, originalTicker, executeAutomations = true) {
 
-        const ticker = originalTicker;
+        const ticker = { ...originalTicker };
         
-        ticker.priceChange = parseFloat(ticker.priceChange);
-        ticker.percentChange = parseFloat(ticker.percentChange);
-        ticker.averagePrice = parseFloat(ticker.averagePrice);
-        ticker.prevClose = parseFloat(ticker.prevClose);
-        ticker.close = parseFloat(ticker.close);
-        ticker.closeQty = parseFloat(ticker.closeQty);
-        ticker.bestBid = parseFloat(ticker.bestBid);
-        ticker.bestBidQty = parseFloat(ticker.bestBidQty);
-        ticker.bestAsk = parseFloat(ticker.bestAsk);
-        ticker.bestAskQty = parseFloat(ticker.bestAskQty);
-        ticker.open = parseFloat(ticker.open);
-        ticker.high = parseFloat(ticker.high);
-        ticker.low = parseFloat(ticker.low);
-        ticker.volume = parseFloat(ticker.volume);
-        ticker.quoteVolume = parseFloat(ticker.quoteVolume);
+        const numericFields = [
+            "priceChange", "percentChange", "averagePrice", "prevClose", "close",
+            "closeQty", "bestBid", "bestBidQty", "bestAsk", "bestAskQty",
+            "open", "high", "low", "volume", "quoteVolume"
+        ];
+
+        // miniTicker only includes a subset of the full ticker fields.
+        for (const field of numericFields) {
+            const value = parseFloat(ticker[field]);
+            ticker[field] = Number.isFinite(value) ? value : null;
+        }
 
         delete ticker.eventTime;
         delete ticker.eventType;

@@ -33,3 +33,7 @@ docker compose logs --tail=50 node_app
 
 # na pasta frontend
 docker compose exec frontend_app npm install react-select
+
+# caso de erro no react-select
+docker compose exec frontend_app npm ci
+docker compose restart frontend_app

@@ -28,7 +28,7 @@ async function startTickerMonitor() {
         if (results.length) 
             results.forEach((result) => WSS.broadcast({ notification: result }));
         
-    })
+    }, Object.keys(symbolsMap))
 
     logger("M-TICKER", "Ticker monitor has started!");
 }
