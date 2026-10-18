@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY frontend/package*.json ./
 
 # Instala as dependências do frontend (incluindo o Vite)
-RUN npm install
+RUN npm ci --include=dev
 
 # Copia o restante do código fonte do frontend
 COPY frontend/ .

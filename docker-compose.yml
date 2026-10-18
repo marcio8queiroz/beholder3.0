@@ -67,6 +67,8 @@ services:
       dockerfile: Dockerfile.frontend
     container_name: beholder30-frontend_app
     restart: always
+    # Sincroniza também volumes node_modules antigos antes de iniciar o Vite.
+    command: ["sh", "-c", "npm ci --include=dev && exec npm run dev -- --host"]
     depends_on:
       - node_app # Depende do backend para se conectar à API
     
