@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select"
+import { getSymbols } from "../services/SymbolsService"
 
 /**
  * props:
@@ -13,9 +14,26 @@ function SelectSymbol(props){
     const [symbols, setSymbols] = useState([]);
     const [value, setValue] = useState("");
 
-    function onSymbolChange(option) {
-        setValue(option);
-        props.onChange?.(option);
+    useEffect(() => {
+        setValue({ value: props.symbol, label: props.symbol });
+    }, [props.symbol])
+
+    useEffect(() => {
+        getSymbols()
+            .then(symbolObjects => {
+                const symbolNames = symbolObjects.map(s => s.symbol).sort();
+                setSymbols(symbolNames.map(s => {
+                    return {
+                        value: s,
+                        label: s
+                    }
+                }));
+            })
+    }, [])
+
+    function onSymbolChange(evt) {
+        //setValue(option);
+        props.onChange({ target: { id: "symbol", value: evt.value } });
     }
 
     const customStyles = {

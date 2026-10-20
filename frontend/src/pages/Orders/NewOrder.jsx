@@ -1,13 +1,14 @@
 import { useState } from "react";
 import SelectSymbol from "../../components/SelectSymbol";
 import FormPage from "../FormPage";
+import SymbolInfo from "../../components/SymbolInfo";
 
-function NewOrder(){
+function NewOrder() {
 
     const [order, setOrder] = useState({});
 
-    function onSymbolChange(evt){
-
+    function onSymbolChange(evt) {
+        setOrder(prevState => ({ ...prevState, symbol: evt.target.value }));
     }
 
     return (
@@ -18,6 +19,13 @@ function NewOrder(){
                         <label>Symbol:</label>
                         <SelectSymbol symbol={order.symbol} disabled={false} onChange={onSymbolChange} />
                     </div>
+                </div>
+                <div className="col-3">
+                    {
+                        order.symbol
+                            ? <SymbolInfo symbol={order.symbol} />
+                            : <></>
+                    }
                 </div>
             </div>
         </FormPage>
