@@ -12,8 +12,15 @@ function getSymbols(){
     return symbolModel.findAll();
 }
 
+function getSymbol(symbol){
+    return symbolModel.findOne({
+        where: { symbol }
+    });
+}
+
 export default {
     deleteAll,
     bulkInsert,
-    getSymbols
+    getSymbols,
+    getSymbol
 }

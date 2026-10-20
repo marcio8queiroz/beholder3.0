@@ -34,9 +34,13 @@ app.use("/beholder", authMiddleware, beholderRouter);
 
 app.use("/symbols", authMiddleware, symbolsRouter);
 
-app.use("/", (req, res, next) => {
+app.get("/", (req, res) => {
     res.send("Hello World!");
 })
+
+app.use((req, res) => {
+    res.status(404).json({ message: "Rota não encontrada." });
+});
 
 app.use(errorMiddleware);
 

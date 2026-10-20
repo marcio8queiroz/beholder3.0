@@ -6,6 +6,13 @@ async function getSymbols(req, res) {
     res.json(symbols);
 }
 
+async function getSymbol(req, res) {
+    const symbol = req.params.symbol.toUpperCase();
+    const symbolObject = await symbolsRepository.getSymbol(symbol);
+    if (!symbolObject) return res.status(404).json({ message: "Símbolo não encontrado." });
+    res.json(symbolObject);
+}
+
 async function syncSymbols(params) {
     const usetBlvt = process.env.BINANCE_BLVT === "true";
     const ignoredCoins = (process.env.IGNORED_COINS || "").split(",");
@@ -41,5 +48,6 @@ async function syncSymbols(params) {
 
 export default {
     syncSymbols,
-    getSymbols
+    getSymbols,
+    getSymbol
 }
