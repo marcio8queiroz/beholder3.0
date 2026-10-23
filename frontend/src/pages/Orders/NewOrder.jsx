@@ -7,9 +7,11 @@ import SelectSide from "../../components/SelectSide";
 import OrderType from "../../components/OrderType";
 
 import { LIMIT_TYPES, STOP_TYPES } from "../../services/ExchangeService";
+import QuantityInput from "../../components/QuantityInput";
 
 function NewOrder() {
 
+    const [error, setError] = useState("");
     const [order, setOrder] = useState({ side: "BUY", type: "MARKET" });
 
     function onSymbolChange(evt) {
@@ -26,6 +28,11 @@ function NewOrder() {
 
     function getLimitPriceClasses(orderType) {
         return LIMIT_TYPES.includes(orderType) ? "col-3" : "d-none";
+    }
+
+    function btnSendClick(){
+        setError("");
+        console.log(order);
     }
 
     return (
@@ -77,8 +84,19 @@ function NewOrder() {
             </div>
             <div className="row mb-3">
                 <div className="col-12">
-                  <input className="form-control" />
+                    <QuantityInput symbol={order.symbol} quantity={order.quantity} isQuote={order.isQuote} allowQuote={order.type === "MARKET"} onChange={onInputChange} />
                 </div>
+            </div>
+            <div className="row">
+                <div className="col-3">
+                    <button type="button" className="btn btn-primary" onClick={btnSendClick}>Send Order</button>
+                    <a href="/orders" className="btn btn-light">Cancel</a>
+                </div>
+                {
+                    error
+                    ? <div className="alert alert-danger mt-1 col-6 py-1">{error}</div>
+                    : <></>
+                }
             </div>
         </FormPage>
     )
