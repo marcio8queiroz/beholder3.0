@@ -6,6 +6,8 @@ import WalletSummary from "../../components/WalletSummary";
 import SelectSide from "../../components/SelectSide";
 import OrderType from "../../components/OrderType";
 
+import { LIMIT_TYPES, STOP_TYPES } from "../../services/ExchangeService";
+
 function NewOrder() {
 
     const [order, setOrder] = useState({ side: "BUY", type: "MARKET" });
@@ -14,8 +16,16 @@ function NewOrder() {
         setOrder(prevState => ({ ...prevState, symbol: evt.target.value }));
     }
 
-    function onInputChange(evt){
-        setOrder(prevState => ({...prevState, [evt.target.id]: evt.target.value}));
+    function onInputChange(evt) {
+        setOrder(prevState => ({ ...prevState, [evt.target.id]: evt.target.value }));
+    }
+
+    function getStopPriceClasses(orderType) {
+        return STOP_TYPES.includes(orderType) ? "col-3" : "d-none";
+    }
+
+    function getLimitPriceClasses(orderType) {
+        return LIMIT_TYPES.includes(orderType) ? "col-3" : "d-none";
     }
 
     return (
@@ -30,7 +40,7 @@ function NewOrder() {
                 <div className="col-3">
                     {
                         order.symbol
-                            ? <SymbolInfo symbol={order.symbol}/>
+                            ? <SymbolInfo symbol={order.symbol} />
                             : <></>
                     }
                 </div>
@@ -46,7 +56,28 @@ function NewOrder() {
                     <SelectSide side={order.side} onChange={onInputChange} />
                 </div>
                 <div className="col-9 text-nowrap overflow-auto">
-                    <OrderType type={order.type} onChange={onInputChange}/>
+                    <OrderType type={order.type} onChange={onInputChange} />
+                </div>
+            </div>
+            <div className="row mb-3">
+                <div className={getStopPriceClasses(order.type)}>
+                    <label htmlFor="stopPrice">Stop Price:</label>
+                    <input className="form-control" id="stopPrice" type="number" value={order.stopPrice || ""} onChange={onInputChange} placeholder="0" />
+                </div>
+                <div className={getStopPriceClasses(order.type)}>
+                    <label htmlFor="trailingDelta">Trailing Delta:</label>
+                    <input className="form-control" id="trailingDelta" type="number" value={order.trailingDelta || ""} onChange={onInputChange} placeholder="0" />
+                </div>
+            </div>
+            <div className="row mb-3">
+                <div className={getLimitPriceClasses(order.type)}>
+                    <label htmlFor="limitPrice">Limit Price:</label>
+                    <input className="form-control" id="limitPrice" type="number" value={order.limitPrice || ""} onChange={onInputChange} placeholder="0" />
+                </div>
+            </div>
+            <div className="row mb-3">
+                <div className="col-12">
+                  <input className="form-control" />
                 </div>
             </div>
         </FormPage>
