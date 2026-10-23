@@ -2,13 +2,20 @@ import { useState } from "react";
 import SelectSymbol from "../../components/SelectSymbol";
 import FormPage from "../FormPage";
 import SymbolInfo from "../../components/SymbolInfo";
+import WalletSummary from "../../components/WalletSummary";
+import SelectSide from "../../components/SelectSide";
+import OrderType from "../../components/OrderType";
 
 function NewOrder() {
 
-    const [order, setOrder] = useState({});
+    const [order, setOrder] = useState({ side: "BUY", type: "MARKET" });
 
     function onSymbolChange(evt) {
         setOrder(prevState => ({ ...prevState, symbol: evt.target.value }));
+    }
+
+    function onInputChange(evt){
+        setOrder(prevState => ({...prevState, [evt.target.id]: evt.target.value}));
     }
 
     return (
@@ -23,9 +30,23 @@ function NewOrder() {
                 <div className="col-3">
                     {
                         order.symbol
-                            ? <SymbolInfo symbol={order.symbol} />
+                            ? <SymbolInfo symbol={order.symbol}/>
                             : <></>
                     }
+                </div>
+            </div>
+            <div className="row">
+                <label>You have:</label>
+                <div className="col-6">
+                    <WalletSummary symbol={order.symbol} />
+                </div>
+            </div>
+            <div className="row mb-3">
+                <div className="col-3">
+                    <SelectSide side={order.side} onChange={onInputChange} />
+                </div>
+                <div className="col-9 text-nowrap overflow-auto">
+                    <OrderType type={order.type} onChange={onInputChange}/>
                 </div>
             </div>
         </FormPage>
