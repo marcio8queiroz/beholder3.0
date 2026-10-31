@@ -1,7 +1,7 @@
 import Sequelize from "sequelize";
 import database from "../db.js";
 
-const OrderModel = database.define("order", {
+const orderModel = database.define("order", {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -56,4 +56,4 @@ const OrderModel = database.define("order", {
     updatedAt: Sequelize.DATE
 })
 
-export default OrderModel;
+export default orderModel;
