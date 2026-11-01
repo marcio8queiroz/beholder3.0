@@ -65,14 +65,14 @@ export default class Exchange {
 
     buy(symbol, quantity, price, options){
         if(!options || options.type === ordersRepository.orderTypes.MARKET)
-            return this.balance.marketBuy(symbol, quantity, options);
+            return this.binance.marketBuy(symbol, quantity, options);
 
         return this.binance.buy(symbol, quantity, price, options);
     }
 
     sell(symbol, quantity, price, options){
         if(!options || options.type === ordersRepository.orderTypes.MARKET)
-            return this.balance.marketSell(symbol, quantity, options);
+            return this.binance.marketSell(symbol, quantity, options);
 
         return this.binance.sell(symbol, quantity, price, options);
     }

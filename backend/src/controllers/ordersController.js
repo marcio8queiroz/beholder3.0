@@ -33,7 +33,7 @@ async function placeOrder(req, res) {
 
         if (result.code !== undefined && result.code < 0) throw new Error(result.message);
 
-        return ordersRepository.insertOrder({
+        const order = await ordersRepository.insertOrder({
             userId,
             symbol,
             quantity: options && options.quoteOrderQty ? "" : quantity,
@@ -45,7 +45,7 @@ async function placeOrder(req, res) {
             transactTime: result.transactTime || result.updateTime,
             status: result.status || ordersRepository.orderStatus.NEW
         })
-        res.status(201).json(order.get({ plain: true }))
+        return res.status(201).json(order.get({ plain: true }));
     }
     catch(err){
         logger("U-" + userId, err.body ? JSON.stringify(err.body) : err.message);

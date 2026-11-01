@@ -17,8 +17,9 @@ const orderModel = database.define("order", {
         }
     },
     automationId: Sequelize.INTEGER,
-    Symbol: {
+    symbol: {
         type: Sequelize.STRING,
+        field: "Symbol",
         allowNull: false
     },
     orderId: {

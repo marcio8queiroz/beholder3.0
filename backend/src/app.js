@@ -11,6 +11,7 @@ import exchangeController from "./controllers/exchangeController.js";
 
 import beholderRouter from "./routers/beholderRouter.js";
 import symbolsRouter from "./routers/symbolsRouter.js"
+import ordersRouter from "./routers/ordersRouter.js"
 
 const app = express();
 
@@ -33,6 +34,8 @@ app.post("/logout", authController.doLogout)
 app.use("/beholder", authMiddleware, beholderRouter);
 
 app.use("/symbols", authMiddleware, symbolsRouter);
+
+app.use("/orders", authMiddleware, ordersRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");

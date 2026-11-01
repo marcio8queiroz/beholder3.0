@@ -33,7 +33,7 @@ const LIMIT_TYPES = [orderTypes.LIMIT, orderTypes.TAKE_PROFIT_LIMIT, orderTypes.
 
 const MARKET_TYPES = [orderTypes.MARKET, orderTypes.STOP_LOSS, orderTypes.TAKE_PROFIT]
 
-function insertOrder() {
+function insertOrder(newOrder) {
     return orderModel.create(newOrder);
 }
 
