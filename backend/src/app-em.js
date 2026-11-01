@@ -2,6 +2,7 @@ import logger from "./utils/logger.js";
 import Exchange from "./utils/exchange.js";
 import Beholder from "./beholder.js";
 import symbolsRepository from "./repositories/symbolsRepository.js";
+import ordersRepository from "./repositories/ordersRepository.js";
 
 
 const LOGS = process.env.APP_EM_LOGS === "true";
@@ -17,17 +18,17 @@ async function startTickerMonitor() {
     new Exchange().tickerStream(async (markets) => {
         const beholder = Beholder.getInstance();
         let results = await Promise.all(markets.map((mkt => {
-             if (!symbolsMap[mkt.symbol]) return false;
-             return beholder.updateMemory(mkt.symbol, "TICKER", null, mkt)
-                      
-            }))
+            if (!symbolsMap[mkt.symbol]) return false;
+            return beholder.updateMemory(mkt.symbol, "TICKER", null, mkt)
+
+        }))
         )
         if (!results) return;
 
         results = results.filter((result) => result);
-        if (results.length) 
+        if (results.length)
             results.forEach((result) => WSS.broadcast({ notification: result }));
-        
+
     }, Object.keys(symbolsMap))
 
     logger("M-TICKER", "Ticker monitor has started!");
@@ -35,66 +36,85 @@ async function startTickerMonitor() {
 
 async function loadWallet(userId, executeAutomations = true) {
     const exchange = new Exchange();
-  
+
     const info = await exchange.balance();
     const beholder = Beholder.getInstance();
     let results = await Promise.all(Object.keys(info).map(async item => {
-        if(executeAutomations) {
-        const memory = await beholder.getMemory(`WALLET_${userId}`);
-        if (memory === info[item].available) return;
+        if (executeAutomations) {
+            const memory = await beholder.getMemory(`WALLET_${userId}`);
+            if (memory === info[item].available) return;
         }
 
-       return beholder.updateMemory(item, `WALLET_${userId}`, null, parseFloat(info[item].available), executeAutomations)
+        return beholder.updateMemory(item, `WALLET_${userId}`, null, parseFloat(info[item].available), executeAutomations)
 
     }));
 
-    
-     
+
+
     const wallet = Object.keys(info).map(item => {
         return { symbol: item, available: info[item].available, onOrder: info[item].onOrder };
     });
 
     if (results) {
-       results = results.filter((result) => result);
-        if (results.length) 
+        results = results.filter((result) => result);
+        if (results.length)
             results.forEach((result) => WSS.broadcast({ notification: result }));
     }
     return wallet;
 }
 
 async function processBalanceData(userId, data) {
-    if(LOGS) logger("U-" + userId, JSON.stringify(data));
+    if (LOGS) logger("U-" + userId, JSON.stringify(data));
 
     loadWallet(userId, true)
         .catch(err => logger("U-" + userId, err.body ? JSON.stringify(err.body) : err.message));
 }
 
-async function processExecutionData(userId, data) {
-    if(data.x === "NEW") return; //ignorar ordens novas, apenas monitorar ordens executadas 
+function scheduleOrderUpdate(userId, order) {
+    setTimeout(async () => {
+        try {
+           const updateOrder = await ordersRepository.updateOrderByOrderId(order.orderId, order);
+           if(!updateOrder) return;
 
-    if(LOGS) logger("U-" + userId, JSON.stringify(data));
+            const type = order.status.indexOf("FILLED") !== -1 ? "success" : "error";
+            WSS.broadcast({ notification: { text: `Order #${updateOrder.orderId} was updated as ${order.status}`, type } });
+
+           const beholder = Beholder.getInstance();
+           beholder.updateMemory(order.symbol, `LAST_ORDER_${userId}`, null, updateOrder.get({ plain: true }));
+        } 
+        catch (err) {
+            logger("U-" + userId, err);
+        }
+    }, 3000);
+
+}
+
+async function processExecutionData(userId, data) {
+    if (data.x === "NEW") return; //ignorar ordens novas, apenas monitorar ordens executadas 
+
+    if (LOGS) logger("U-" + userId, JSON.stringify(data));
 
     const order = {
         symbol: data.s,
-        orderId: data.i, 
+        orderId: data.i,
         side: data.S,
         type: data.o,
         status: data.X,
         transactTime: data.T
     }
 
-    if(order.status === "FILLED") {
+    if (order.status === "FILLED") {
         const quoteAmount = parseFloat(data.Z);
         order.avgPrice = quoteAmount / parseFloat(data.z);
-        order.commission = data.n;  
+        order.commission = data.n;
         order.quantity = data.q;
-        const isQuotCommission = data.N && order.symbol.endWith(data.N); //verificar se a comissão é em moeda de cotação ou moeda base
+        const isQuotCommission = data.N && order.symbol.endsWith(data.N); //verificar se a comissão é em moeda de cotação ou moeda base
         order.net = isQuotCommission ? quoteAmount - parseFloat(order.commission) : quoteAmount;
     }
-    else if(order.status === "REJECTED") 
+    else if (order.status === "REJECTED")
         order.obs = data.r;
 
-    //order update
+    scheduleOrderUpdate(userId, order)
 }
 
 
@@ -103,7 +123,7 @@ function startUserDataMonitor(userId) {
         loadWallet(userId, false)
             .catch(err => logger("U-" + userId, "Wallet has NOT loaded!\n" + (err.body ? JSON.stringify
                 (err.body) : err.message)));
- 
+
         const exchange = new Exchange(userId);
         exchange.userDataStream(
             data => processBalanceData(userId, data),
