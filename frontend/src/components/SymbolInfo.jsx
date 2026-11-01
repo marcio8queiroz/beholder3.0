@@ -31,12 +31,21 @@ function SymbolInfo(props) {
         return `${import.meta.env.VITE_BWS_URL}/ws/${props.symbol.toLowerCase()}@ticker`;
     }
 
-    const {lastJsonMessage} = useWebSocket(getBinanceWSUrl(), {
+    useWebSocket(getBinanceWSUrl(), {
         onOpen: () => console.log(`connected to Binance Stream ${props.symbol}@ticker`),
-        onMessage: () => {
-            if (lastJsonMessage)
-                setInfo(prevState => ({...prevState, yesterday: lastJsonMessage.o, now: lastJsonMessage.c}));
-    },
+        onMessage: (event) => {
+            let data;
+            try {
+                data = JSON.parse(event.data);
+            } catch (error) {
+                console.error("Invalid Binance ticker message", error);
+                return;
+            }
+
+            if (data?.o == null || data?.c == null) return;
+
+            setInfo(prevState => ({...prevState, yesterday: data.o, now: data.c}));
+        },
 
         onError: (err) => console.error(err),
         shouldReconnect: () => true,

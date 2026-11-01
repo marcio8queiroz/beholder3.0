@@ -9,13 +9,23 @@ function Ticker() {
 
     const [ticker, setTicker] = useState({});
 
-    const { lastJsonMessage } = useWebSocket(import.meta.env.VITE_BWS_URL + "/stream", {
+    useWebSocket(import.meta.env.VITE_BWS_URL + "/stream", {
         onOpen: () => console.log("connected to Binance WS"),
-        onMessage: () => {
-            if(!lastJsonMessage) return;
+        onMessage: (event) => {
+            let message;
+            try {
+                message = JSON.parse(event.data);
+            } catch (error) {
+                console.error("Invalid Binance stream message", error);
+                return;
+            }
+
+            const data = message?.data;
+            if (!data?.s) return;
+
             setTicker(prevState => ({
                 ...prevState,
-                [lastJsonMessage.data.s]: lastJsonMessage.data
+                [data.s]: data
             }))
         },
         queryParams: {streams},
