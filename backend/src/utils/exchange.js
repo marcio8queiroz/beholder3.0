@@ -1,6 +1,7 @@
 import Binance from "node-binance-api";
 import logger from "./logger.js";
 import createUserDataStream from "./userDataStream.js";
+import ordersRepository from "../repositories/ordersRepository.js";
 
 const LOGS = process.env.BINANCE_LOGS === "false"
 const APIKEY = process.env.ACCES_KEY;
@@ -60,5 +61,19 @@ export default class Exchange {
             onError: error => logger("U-" + this.userId, "User Data monitor: " + error.message)
         });
         return this.userStream;
+    }
+
+    buy(symbol, quantity, price, options){
+        if(!options || options.type === ordersRepository.orderTypes.MARKET)
+            return this.balance.marketBuy(symbol, quantity, options);
+
+        return this.binance.buy(symbol, quantity, price, options);
+    }
+
+    sell(symbol, quantity, price, options){
+        if(!options || options.type === ordersRepository.orderTypes.MARKET)
+            return this.balance.marketSell(symbol, quantity, options);
+
+        return this.binance.sell(symbol, quantity, price, options);
     }
 }
