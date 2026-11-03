@@ -37,3 +37,6 @@ docker compose exec frontend_app npm install react-select
 # caso de erro no react-select
 docker compose exec frontend_app npm ci
 docker compose restart frontend_app
+
+# migrations
+docker compose exec node_app npm run migratedb

@@ -1,6 +1,6 @@
 import orderModel from "../models/orderModel.js";
 import OrderModel from "../models/orderModel.js";
-import sequelize from "sequelize";
+import sequelize, { Sequelize } from "sequelize";
 
 const orderTypes = {
     MARKET: "MARKET",
@@ -102,6 +102,24 @@ async function updateOrderByOrderId(orderId, newOrder) {
 
 }
 
+async function getLastFilledOrders(userId) {
+
+    const where = {
+        userId,
+        status: orderStatus.FILLED
+    }
+
+    const idObects = await orderModel.findAll({
+        where,
+        group: 'symbol',
+        attributes: [ Sequelize.fn("max", Sequelize.col("id")) ],
+        raw: true
+    })
+    
+    const ids = idObects.map(o => Object.values(o)).flat();
+    return orderModel.findAll({ where: { id: ids } });//IN
+}
+
 export default {
     orderStatus,
     STOP_TYPES,
@@ -114,5 +132,6 @@ export default {
     getOrderById,
     getOrder,
     updateOrderById,
-    updateOrderByOrderId
+    updateOrderByOrderId,
+    getLastFilledOrders
 }

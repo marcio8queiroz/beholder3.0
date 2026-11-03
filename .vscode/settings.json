@@ -1,5 +1,10 @@
 {
     "DockerRun.DisableDockerrc": true,
+    "editor.wordWrap": "off",
+    "diffEditor.wordWrap": "off",
+    "[javascript][javascriptreact][typescript][typescriptreact][json][jsonc][html][css][markdown]": {
+        "editor.wordWrap": "off"
+    },
     "editor.quickSuggestions": {
         "other": "off",
         "comments": "off",

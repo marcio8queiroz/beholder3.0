@@ -71,7 +71,7 @@ function NewOrder() {
                 <div className="col-3">
                     <SelectSide side={order.side} onChange={onInputChange} />
                 </div>
-                <div className="col-9 text-nowrap overflow-auto">
+                <div className="col-3">
                     <OrderType type={order.type} onChange={onInputChange} />
                 </div>
             </div>
@@ -90,9 +90,7 @@ function NewOrder() {
                     <label htmlFor="limitPrice">Limit Price:</label>
                     <input className="form-control" id="limitPrice" type="number" value={order.limitPrice || ""} onChange={onInputChange} placeholder="0" />
                 </div>
-            </div>
-            <div className="row mb-3">
-                <div className="col-12">
+                <div className="col-3">
                     <QuantityInput symbol={order.symbol} quantity={order.quantity} isQuote={order.isQuote} allowQuote={order.type === "MARKET"} onChange={onInputChange} />
                 </div>
             </div>

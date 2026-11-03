@@ -138,14 +138,19 @@ function startUserDataMonitor(userId) {
 
 let WSS;
 
-function init(userId, wssInstance) {
+async function init(userId, wssInstance) {
     WSS = wssInstance;
 
     startTickerMonitor().catch(err => logger("M-TICKER", "Ticker monitor has not started: " + err.message));
 
     startUserDataMonitor(userId);
 
-    //carregar últimas ordens executadas
+    logger("system", "Loading Stop last orders...");
+    const lastOrders = await ordersRepository.getLastFilledOrders(userId);
+    const beholder = Beholder.getInstance();
+    await Promise.all(lastOrders.map(order => 
+        beholder.updateMemory(order.symbol, `LAST_ORDER_${userId}`, null, order.get({ plain: true }), false)
+    ));
 
     // monitoramento de ativos (candles)
 
