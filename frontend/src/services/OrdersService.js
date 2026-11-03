@@ -34,7 +34,7 @@ export async function placeOrder(order) {
     if(STOP_TYPES.includes(postOrder.options.type)){
         postOrder.options.stopPrice = order.stopPrice;   
         if(order.trailingDelta)
-            postOrder.trailingDelta = order.trailingDelta;
+            postOrder.options.trailingDelta = order.trailingDelta;
     }
 
     const response = await axios.post(ORDERS_URL, postOrder);

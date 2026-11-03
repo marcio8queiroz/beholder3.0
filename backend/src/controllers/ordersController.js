@@ -40,7 +40,8 @@ async function placeOrder(req, res) {
             type: options ? options.type : ordersRepository.orderTypes.MARKET,
             side,
             limitPrice,
-            stopPrice: options ? options.trailingDelta : null,
+            stopPrice: options ? options.stopPrice : null,
+            trailingDelta: options?.trailingDelta ?? null,
             orderId: result.orderId,
             transactTime: result.transactTime || result.updateTime,
             status: result.status || ordersRepository.orderStatus.NEW
