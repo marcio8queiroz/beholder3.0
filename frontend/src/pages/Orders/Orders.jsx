@@ -1,10 +1,10 @@
-import TemplatePage from "../TemplatePage";
+import ListPage from "../ListPage";
+import NewOrderButton from "./NewOrderButton";
+import OrdersTable from "./OrdersTable";
 
 
 export default function Orders(){
     return (
-        <TemplatePage>
-            <div>Orders</div>
-        </TemplatePage>
+        <ListPage title="Orders" button={<NewOrderButton />} table={<OrdersTable />} />
     )
 }
