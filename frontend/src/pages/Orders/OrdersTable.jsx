@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import OrderRow from "./OrderRow";
 import { getOrders } from "../../services/OrdersService";
-import Pagination from "../../components/pagination";
+import Pagination from "../../components/Pagination";
 
 export default function OrdersTable() {
     const location = useLocation();
