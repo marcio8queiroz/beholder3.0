@@ -64,7 +64,7 @@ async function updateOrder(currentOrder, newOrder) {
     if (!currentOrder || !newOrder) return false;
 
     if (newOrder.status && newOrder.status !== currentOrder.status
-        && [orderStatus.NEW, orderStatus.PARTIALLY_FILLED].includes[currentOrder.status])
+        && [orderStatus.NEW, orderStatus.PARTIALLY_FILLED].includes(currentOrder.status))
         currentOrder.status = newOrder.status;
 
     if (newOrder.avgPrice && newOrder.avgPrice !== currentOrder.avgPrice)
