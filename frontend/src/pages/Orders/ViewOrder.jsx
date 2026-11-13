@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import FormPage from "../FormPage";
 import { useNavigate, useParams } from "react-router-dom";
-import { getOrder } from "../../services/OrdersService";
+import { cancelOrder, getOrder, syncOrder } from "../../services/OrdersService";
 import { ORDER_STATUS, FINISHED_STATUS } from "../../services/ExchangeService";
 
 function ViewOrder() {
@@ -42,9 +42,23 @@ function ViewOrder() {
         return new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "medium" }).format(date);
     }
 
-    function btnSyncClick() { }
+    function btnSyncClick() { 
+        syncOrder(order.id)
+        .then(result => setOrder(result))
+        .catch(err => {
+                console.error(err.response ? err.response.data : err);
+                setError(err.response ? JSON.stringify(err.response.data) : err.message);
+            });
+    }
 
-    function btnCancelClick() { }
+    function btnCancelClick() { 
+        cancelOrder(order.symbol, order.orderId)
+        .then(result => setOrder(result))
+        .catch(err => {
+                console.error(err.response ? err.response.data : err);
+                setError(err.response ? JSON.stringify(err.response.data) : err.message);
+            });
+    }
 
     return (
         <FormPage title="Order Details">

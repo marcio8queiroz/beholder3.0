@@ -14,6 +14,16 @@ export async function getOrder(id) {
     return response.data;
 }
 
+export async function cancelOrder(symbol, orderId) {
+    const response = await axios.delete(`${ORDERS_URL}/${symbol}/${orderId}`);
+    return response.data;
+}
+
+export async function syncOrder(beholderOrderId) {
+    const response = await axios.post(`${ORDERS_URL}/${beholderOrderId}/sync`, null);
+    return response.data;
+}
+
 export async function placeOrder(order) {
     const postOrder = {
         symbol: order.symbol.toUpperCase(),
