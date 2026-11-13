@@ -29,6 +29,22 @@ export default class Exchange {
         return this.binance.balance();
     }
 
+    orderStatus(symbol, orderId){
+        return this.binance.orderStatus(symbol, orderId);
+    }
+
+    orderTrade(symbol, orderId ){
+        return this.binance.trades(symbol, { orderId });
+        const quoteTrades = trades.filter(t => symbol.endsWith(t.commssionAsset));
+        if(!quoteTrades || !quoteTrades.length) return false;
+
+        const aggTrade = {
+            commission: quoteTrades.map(t => parseFloat(t.commission)).reduce((a, b) => a + b),
+            commssionAsset: quoteTrades[0].commssionAsset
+        }
+        return aggTrade;
+    }
+
     tickerStream(callback, symbols){
         const uniqueSymbols = [...new Set(symbols)];
         const subscriptions = [];
