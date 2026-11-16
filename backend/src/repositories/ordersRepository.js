@@ -1,5 +1,4 @@
 import orderModel from "../models/orderModel.js";
-import OrderModel from "../models/orderModel.js";
 import sequelize, { Sequelize } from "sequelize";
 
 const orderTypes = {
