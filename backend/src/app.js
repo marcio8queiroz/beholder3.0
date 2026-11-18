@@ -10,8 +10,9 @@ import authController from "./controllers/authController.js";
 import exchangeController from "./controllers/exchangeController.js";
 
 import beholderRouter from "./routers/beholderRouter.js";
-import symbolsRouter from "./routers/symbolsRouter.js"
-import ordersRouter from "./routers/ordersRouter.js"
+import symbolsRouter from "./routers/symbolsRouter.js";
+import ordersRouter from "./routers/ordersRouter.js";
+import monitorsRouter from "./routers/monitorRouter.js";
 
 const app = express();
 
@@ -36,6 +37,8 @@ app.use("/beholder", authMiddleware, beholderRouter);
 app.use("/symbols", authMiddleware, symbolsRouter);
 
 app.use("/orders", authMiddleware, ordersRouter);
+
+app.use("/monitors", authMiddleware, monitorsRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");

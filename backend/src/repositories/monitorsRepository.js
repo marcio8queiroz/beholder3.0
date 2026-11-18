@@ -1,5 +1,5 @@
 import { where } from "sequelize";
-import monitorModel from "../models/monitorModel";
+import monitorModel from "../models/monitorModel.js";
 
 const monitorTypes = {
     CANDLES: "CANDLES"
@@ -10,8 +10,8 @@ async function monitorExists(userId, type, symbol, interval) {
     return count > 0;
 }
 
-async function insertMOnitor(newMonitor, transction) {
-    return monitorModel.create(newMonitor, { transction });
+async function insertMonitor(newMonitor, transaction) {
+    return monitorModel.create(newMonitor, { transaction });
 }
 
 function deletMonitor(id) {
@@ -70,7 +70,7 @@ async function updateMonitor(id, newMonitor) {
 export default {
     monitorTypes,
     monitorExists,
-    insertMOnitor,
+    insertMonitor,
     deletMonitor,
     getMonitor,
     updateMonitor,
