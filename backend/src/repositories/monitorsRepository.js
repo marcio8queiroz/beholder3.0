@@ -14,7 +14,7 @@ async function insertMonitor(newMonitor, transaction) {
     return monitorModel.create(newMonitor, { transaction });
 }
 
-function deletMonitor(id) {
+function deleteMonitor(id) {
     return monitorModel.destroy({ where: { id } });
 }
 
@@ -46,7 +46,7 @@ async function updateMonitor(id, newMonitor) {
     if (newMonitor.type && newMonitor.type !== currentMonitor.type)
         currentMonitor.type = newMonitor.type;
 
-    if (newMonitor.type === monitorTypes.CANDLES) {
+    if ((newMonitor.type ?? currentMonitor.type) === monitorTypes.CANDLES) {
         if (newMonitor.interval && newMonitor.interval !== currentMonitor.interval)
             currentMonitor.interval = newMonitor.interval;
     }
@@ -54,7 +54,7 @@ async function updateMonitor(id, newMonitor) {
     else
         currentMonitor.interval = null;
 
-    if (newMonitor.indexes !== currentMonitor.indexes)
+    if (newMonitor.indexes !== undefined && newMonitor.indexes !== currentMonitor.indexes)
         currentMonitor.indexes = newMonitor.indexes;
 
     if (newMonitor.isActive !== null && newMonitor.isActive !== undefined && newMonitor.isActive !== currentMonitor.isActive)
@@ -71,7 +71,7 @@ export default {
     monitorTypes,
     monitorExists,
     insertMonitor,
-    deletMonitor,
+    deleteMonitor,
     getMonitor,
     updateMonitor,
     getMonitors,

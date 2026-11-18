@@ -3,6 +3,7 @@ import Exchange from "./utils/exchange.js";
 import Beholder from "./beholder.js";
 import symbolsRepository from "./repositories/symbolsRepository.js";
 import ordersRepository from "./repositories/ordersRepository.js";
+import monitorsRepository from "./repositories/monitorsRepository.js";
 
 
 const LOGS = process.env.APP_EM_LOGS === "true";
@@ -73,15 +74,15 @@ async function processBalanceData(userId, data) {
 function scheduleOrderUpdate(userId, order) {
     setTimeout(async () => {
         try {
-           const updateOrder = await ordersRepository.updateOrderByOrderId(order.orderId, order);
-           if(!updateOrder) return;
+            const updateOrder = await ordersRepository.updateOrderByOrderId(order.orderId, order);
+            if (!updateOrder) return;
 
             const type = order.status.indexOf("FILLED") !== -1 ? "success" : "error";
             WSS.broadcast({ notification: { text: `Order #${updateOrder.orderId} was updated as ${order.status}`, type } });
 
-           const beholder = Beholder.getInstance();
-           beholder.updateMemory(order.symbol, `LAST_ORDER_${userId}`, null, updateOrder.get({ plain: true }));
-        } 
+            const beholder = Beholder.getInstance();
+            beholder.updateMemory(order.symbol, `LAST_ORDER_${userId}`, null, updateOrder.get({ plain: true }));
+        }
         catch (err) {
             logger("U-" + userId, err);
         }
@@ -148,11 +149,16 @@ async function init(userId, wssInstance) {
     logger("system", "Loading Stop last orders...");
     const lastOrders = await ordersRepository.getLastFilledOrders(userId);
     const beholder = Beholder.getInstance();
-    await Promise.all(lastOrders.map(order => 
+    await Promise.all(lastOrders.map(order =>
         beholder.updateMemory(order.symbol, `LAST_ORDER_${userId}`, null, order.get({ plain: true }), false)
     ));
 
-    // monitoramento de ativos (candles)
+    const userMonitors = await monitorsRepository.getActiveUserMonitors(userId);
+    userMonitors
+        .filter(m => m.type === monitorsRepository.monitorTypes.CANDLES)
+        .map(m => setTimeout(() => {
+            //inicializar a stream de candles
+        }, 250))
 
     logger("system", "App Exchange Monitor has started!");
 }

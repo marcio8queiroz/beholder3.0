@@ -13,8 +13,8 @@ const MonitorModel = database.define("monitor", {
         allowNull: true,
         },      
       symbol: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
+        type: Sequelize.STRING(20),
+        allowNull: false,
       },
       type: {
         type: Sequelize.STRING,

@@ -7,7 +7,7 @@ router.get("/:id", monitorsController.getMonitor);
 
 router.get("/", monitorsController.getMonitors);
 
-router.delete("/Id", monitorsController.deleteMonitor);
+router.delete("/:id", monitorsController.deleteMonitor);
 
 router.post("/:id/start", monitorsController.startMonitor);
 router.post("/:id/stop", monitorsController.stopMonitor);
